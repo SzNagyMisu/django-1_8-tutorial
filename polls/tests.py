@@ -18,9 +18,9 @@ def create_question(question_text, days):
                                    pub_date=time)
 
 
-class QuestionViewTests(TestCase):
+class IndexViewTests(TestCase):
 
-    def test_index_view_with_no_questions(self):
+    def test_with_no_questions(self):
         """
         If no questions exist, an appropriate message should be displayed.
         """
@@ -29,7 +29,7 @@ class QuestionViewTests(TestCase):
         self.assertContains(response, "No polls are available.")
         self.assertQuerysetEqual(response.context['question_list'], [])
 
-    def test_index_view_with_a_past_question(self):
+    def test_with_a_past_question(self):
         """
         Questions with a pub_date in the past should be displayed on the
         index page
@@ -42,7 +42,7 @@ class QuestionViewTests(TestCase):
             ['<Question: Past question.>']
         )
 
-    def test_index_view_with_a_future_question(self):
+    def test_with_a_future_question(self):
         """
         Questions with a pub_date in the future should not be displayed on
         the index page.
@@ -56,7 +56,7 @@ class QuestionViewTests(TestCase):
             []
         )
 
-    def test_index_view_with_future_question_and_past_question(self):
+    def test_with_future_question_and_past_question(self):
         """
         Even if both past and future questions exist, only past questions
         should be displayed.
@@ -70,7 +70,7 @@ class QuestionViewTests(TestCase):
             ['<Question: Past question.>']
         )
 
-    def test_index_view_with_two_past_questions(self):
+    def test_with_two_past_questions(self):
         """
         The questions index page may display multiple questions.
         """
@@ -83,7 +83,10 @@ class QuestionViewTests(TestCase):
             ['<Question: Past question 2.>', '<Question: Past question 1.>']
         )
 
-    def test_detail_view_with_a_future_question(self):
+
+class DetailViewTests(TestCase):
+
+    def test_with_a_future_question(self):
         """
         The detail view of a question with a pub_date in the future should
         return a 404 not found.
@@ -94,7 +97,7 @@ class QuestionViewTests(TestCase):
                                            args=(future_question.id,)))
         self.assertEqual(response.status_code, 404)
 
-    def test_detail_view_with_a_past_question(self):
+    def test_with_a_past_question(self):
         """
         The detail view of a question with a pub_date in the past should
         display the question's text.
@@ -107,7 +110,10 @@ class QuestionViewTests(TestCase):
         self.assertContains(response, "Past question.")
         self.assertEqual(response.context['question'], past_question)
 
-    def test_results_view_with_a_past_question(self):
+
+class ResultsViewTests(TestCase):
+
+    def test_with_a_past_question(self):
         """
         The results view of a question with a pub_date in the past should
         display the question's text.
@@ -120,7 +126,7 @@ class QuestionViewTests(TestCase):
         self.assertContains(response, "Past question.")
         self.assertEqual(response.context['question'], past_question)
 
-    def test_results_view_with_a_future_question(self):
+    def test_with_a_future_question(self):
         """
         The results view of a question with a pub_date in the future should
         return a 404 not found.
